@@ -69,9 +69,9 @@ export default NextAuth({
             role: 'user',
           });
 
-          await client.request(PublishNextUserById, {
-            id: newUser.id,
-          });
+          // await client.request(PublishNextUserById, {
+          //   id: newUser.id,
+          // });
 
           return {
             id: newUser.id,
