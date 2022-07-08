@@ -19,8 +19,8 @@ const GetUserByEmail = gql`
 `;
 
 const CreateNextUserByEmail = gql`
-  mutation CreateNextUserByEmail($email: String!, $password: String!) {
-    newUser: createNextUser(data: { email: $email, password: $password }) {
+  mutation CreateNextUserByEmail($email: String!, $password: String!, $role: String!) {
+    newUser: createNextUser(data: { email: $email, password: $password, role: $role }) {
       id
     }
   }
