@@ -2,6 +2,7 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { GraphQLClient, gql } from 'graphql-request';
 import { hash, compare } from 'bcrypt';
+import { JWT } from 'next-auth/jwt';
 
 const client = new GraphQLClient(process.env.NEXT_PUBLIC_GRAPHCMS_ENDPOINT!, {
   headers: {
@@ -14,6 +15,7 @@ const GetUserByEmail = gql`
     user: nextUser(where: { email: $email }, stage: DRAFT) {
       id
       password
+      role
     }
   }
 `;
@@ -22,6 +24,7 @@ const CreateNextUserByEmail = gql`
   mutation CreateNextUserByEmail($email: String!, $password: String!, $role: String!) {
     newUser: createNextUser(data: { email: $email, password: $password, role: $role }) {
       id
+      role
     }
   }
 `;
@@ -74,6 +77,7 @@ export default NextAuth({
             id: newUser.id,
             username: email,
             email,
+            role: newUser.role,
           };
         }
 
@@ -87,19 +91,25 @@ export default NextAuth({
           id: user.id,
           username: email,
           email,
+          role: user.role,
         };
       },
     }),
   ],
   secret: 'asodnasdn12321admckxzmclkamspem12309i123alsmd',
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, user }) {
+      user && (token.role = user.role);
       return token;
     },
 
     async session({ session, token, user }) {
       if (token.sub) {
         session.user.userId = token.sub;
+      }
+
+      if (token.role) {
+        session.user.role = token.role as 'user' | 'admin';
       }
 
       return session;

@@ -13,6 +13,12 @@ declare module 'next-auth' {
       // Custom fields
 
       userId: string;
+      role: 'user' | 'admin';
     };
+  }
+
+  interface JWT {
+    /** OpenID ID Token */
+    role: 'user' | 'admin';
   }
 }

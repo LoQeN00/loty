@@ -1,17 +1,15 @@
 import React from 'react';
-import { useSession, getSession } from 'next-auth/react';
+import { useSession, getSession, signOut } from 'next-auth/react';
 import { GetServerSidePropsContext } from 'next';
+import UserDashboard from './components/UserDashboard';
+import AdminDashboard from './components/AdminDashboard';
 
 type Props = {};
 
 const HomePage = (props: Props) => {
   const { data: session, status } = useSession();
 
-  return (
-    <div>
-      <h1 className="text-2xl text-red-500">HomePage</h1>
-    </div>
-  );
+  return session?.user.role === 'user' ? <UserDashboard /> : <AdminDashboard />;
 };
 
 export const getServerSideProps = async ({ req, res }: GetServerSidePropsContext) => {
