@@ -63,6 +63,7 @@ export default NextAuth({
           const { newUser } = await client.request(CreateNextUserByEmail, {
             email,
             password: await hash(password, 12),
+            role: 'user',
           });
 
           await client.request(PublishNextUserById, {
